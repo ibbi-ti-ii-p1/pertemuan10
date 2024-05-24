@@ -1,0 +1,85 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Resep</title>
+    <style>
+        .recipes {
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .recipes img {
+            width: 240px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .recipes h2 {
+            margin-top: 10px;
+        }
+
+        .recipes ul {
+            text-align: left;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .recipes ul li {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="recipes">
+        <img src="" alt="" id="image-recipe">
+        <h2 id="name-recipe"></h2>
+        <h4>Ingredients</h4>
+        <ul id="ingredients-list"></ul>
+        <h4>Instructions</h4>
+        <ul id="instructions-list"></ul>
+    </div>
+
+    <script>
+        const imageRecipe = document.getElementById('image-recipe');
+        const nameRecipe = document.getElementById('name-recipe');
+        const ingredientsList = document.getElementById('ingredients-list');
+        const instructionsList = document.getElementById('instructions-list');
+
+        const xhttp = new XMLHttpRequest();
+
+        // get id from query string
+        // http://localhost:3000/index.html?id=43
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+
+        xhttp.open("GET", "https://dummyjson.com/recipes/" + id);
+        xhttp.send();
+
+        xhttp.onload = function () {
+            const recipe = JSON.parse(xhttp.responseText);
+
+            imageRecipe.src = recipe.image;
+            nameRecipe.innerHTML = recipe.name;
+
+            recipe.ingredients.forEach(ingredient => {
+                const li = document.createElement('li');
+                li.innerHTML = ingredient;
+                ingredientsList.appendChild(li);
+            });
+
+            recipe.instructions.forEach(instruction => {
+                const li = document.createElement('li');
+                li.innerHTML = instruction;
+                instructionsList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+
+</html>
