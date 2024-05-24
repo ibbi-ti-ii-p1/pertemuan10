@@ -3,82 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Resep</title>
+    <title>Quote List</title>
     <style>
-        .recipes {
-            width: 50%;
-            margin: 0 auto;
-        }
-
-        .recipes img {
-            width: 240px;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        .recipes h2 {
-            margin-top: 10px;
-        }
-
-        .recipes ul {
-            text-align: left;
-            padding: 0;
+        /* generate aestetic quote list css style */
+        ul {
             list-style-type: none;
+            padding: 0;
+            width: 50vw;
+            margin: auto;
         }
 
-        .recipes ul li {
-            margin-bottom: 10px;
+        li {
+            margin: 0.5em 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding: 1em;
             border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 10px;
+            border-radius: 0.5em;
+        }
+
+        a:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* div with position fixed with fixed height` */
+        div {
+            margin-top: 1em;
+            padding: 1em;
+            font-style: italic;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
-    <div class="recipes">
-        <img src="" alt="" id="image-recipe">
-        <h2 id="name-recipe"></h2>
-        <h4>Ingredients</h4>
-        <ul id="ingredients-list"></ul>
-        <h4>Instructions</h4>
-        <ul id="instructions-list"></ul>
-    </div>
 
     <script>
-        const imageRecipe = document.getElementById('image-recipe');
-        const nameRecipe = document.getElementById('name-recipe');
-        const ingredientsList = document.getElementById('ingredients-list');
-        const instructionsList = document.getElementById('instructions-list');
-
         const xhttp = new XMLHttpRequest();
-
-        // get id from query string
-        // http://localhost:3000/index.html?id=43
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-
-        xhttp.open("GET", "https://dummyjson.com/recipes/" + id);
+        xhttp.open("GET", "https://dummyjson.com/quotes");
         xhttp.send();
 
+        const divQuote = document.createElement("div");
+        document.body.append(divQuote);
+
         xhttp.onload = function () {
-            const recipe = JSON.parse(xhttp.responseText);
+            const quotes = JSON.parse(xhttp.responseText).quotes;
+            const ul = document.createElement("ul");
 
-            imageRecipe.src = recipe.image;
-            nameRecipe.innerHTML = recipe.name;
-
-            recipe.ingredients.forEach(ingredient => {
-                const li = document.createElement('li');
-                li.innerHTML = ingredient;
-                ingredientsList.appendChild(li);
+            quotes.forEach(quote => {
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.textContent = quote.quote;
+                a.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    divQuote.textContent = quote.quote + " - " + quote.author;
+                });
+                li.appendChild(a);
+                ul.appendChild(li);
             });
-
-            recipe.instructions.forEach(instruction => {
-                const li = document.createElement('li');
-                li.innerHTML = instruction;
-                instructionsList.appendChild(li);
-            });
-        }
+            document.body.appendChild(ul);
+        };
     </script>
 </body>
 
